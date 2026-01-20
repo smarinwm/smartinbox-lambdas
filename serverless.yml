@@ -1,0 +1,98 @@
+service: smartinbox-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-1
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_USER: ${env:DB_USER}
+    DB_PASS: ${env:DB_PASS}
+    DB_NAME: ${env:DB_NAME}
+    JWT_SECRET: ${env:JWT_SECRET}
+  vpc:
+    securityGroupIds:
+      - sg-xxxxxxxx   # Reemplaza con tu SG
+    subnetIds:
+      - subnet-xxxxxxxx
+      - subnet-yyyyyyyy
+
+functions:
+  login:
+    handler: login/index.handler
+    events:
+      - httpApi:
+          path: /login
+          method: post
+
+  getEmails:
+    handler: getEmails/index.handler
+    events:
+      - httpApi:
+          path: /emails
+          method: get
+
+  getEmailById:
+    handler: getEmailById/index.handler
+    events:
+      - httpApi:
+          path: /emails/{id}
+          method: get
+
+  getTasks:
+    handler: getTasks/index.handler
+    events:
+      - httpApi:
+          path: /tasks
+          method: get
+
+  createTask:
+    handler: createTask/index.handler
+    events:
+      - httpApi:
+          path: /tasks
+          method: post
+
+  getSettings:
+    handler: getSettings/index.handler
+    events:
+      - httpApi:
+          path: /settings
+          method: get
+
+  updateSettings:
+    handler: updateSettings/index.handler
+    events:
+      - httpApi:
+          path: /settings
+          method: put
+
+  getLabels:
+    handler: getLabels/index.handler
+    events:
+      - httpApi:
+          path: /labels
+          method: get
+
+  createLabel:
+    handler: createLabel/index.handler
+    events:
+      - httpApi:
+          path: /labels
+          method: post
+
+  suggestResponse:
+    handler: suggestResponse/index.handler
+    events:
+      - httpApi:
+          path: /ai/suggest-response
+          method: post
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  individually: true

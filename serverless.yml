@@ -92,7 +92,6 @@ functions:
           method: post
 
 plugins:
-  - serverless-offline
   - serverless-dotenv-plugin
 
 package:

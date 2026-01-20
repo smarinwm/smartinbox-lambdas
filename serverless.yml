@@ -5,7 +5,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
-  region: eu-west-1
+  region: us-east-1
   environment:
     DB_HOST: ${env:DB_HOST}
     DB_USER: ${env:DB_USER}

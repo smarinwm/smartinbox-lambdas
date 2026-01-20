@@ -12,8 +12,10 @@
   "dependencies": {
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.16.1",
-    "serverless": "^3.40.0",
     "serverless-dotenv-plugin": "^6.0.0",
     "serverless-offline": "^12.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.40.0"
   }
 }

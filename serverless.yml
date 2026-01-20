@@ -6,6 +6,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
+  role: arn:aws:iam::150766112371:role/LabRole
   environment:
     DB_HOST: ${env:DB_HOST}
     DB_USER: ${env:DB_USER}

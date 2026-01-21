@@ -15,10 +15,10 @@ provider:
     JWT_SECRET: ${env:JWT_SECRET}
   vpc:
     securityGroupIds:
-      - sg-0ee080bd39cdf33e3  # Reemplaza con tu SG
+      - sg-0ee080bd39cdf33e3
     subnetIds:
-      - subnet-0427c640e1ab71a6e  # us-east-1a
-      - subnet-0987f5195c1f9a6d6  # us-east-1b
+      - subnet-042746d01eba1fa86 
+      - subnet-08b7150f67000901d 
 
 
 functions:

@@ -1,6 +1,5 @@
 # smartinbox-lambdas
 
-Claro, aquí tienes todo el contenido del `README.md` en formato continuo para que puedas copiarlo directamente y pegarlo en tu archivo:
 
 ---
 

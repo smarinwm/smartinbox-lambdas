@@ -1,34 +1,47 @@
-const jwt = require("jsonwebtoken");
+const pool = require('../utils/db');
 
 exports.handler = async (event) => {
-  console.log("Evento recibido:", JSON.stringify(event));
-
-  const authHeader = event.headers?.Authorization || event.headers?.authorization;
-  console.log("Authorization header:", authHeader);
-
-  if (!authHeader) {
-    return {
-      statusCode: 401,
-      body: JSON.stringify({ error: "No token provided" }),
-    };
-  }
-
-  const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Token decodificado:", decoded);
+    // Obtener y validar el user_id desde los parámetros de consulta
+    const userId = Number(event.queryStringParameters?.user_id);
+    if (!userId) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Falta el parámetro user_id en la consulta' }),
+      };
+    }
 
-    // Aquí iría la lógica para obtener los emails
+    // Consultar todos los correos del usuario
+    const [rows] = await pool.query(
+      `
+      SELECT e.id, e.subject, e.body, GROUP_CONCAT(l.name) AS labels
+      FROM emails e
+      LEFT JOIN email_labels el ON e.id = el.email_id
+      LEFT JOIN labels l ON el.label_id = l.id
+      WHERE e.user_id = ?
+      GROUP BY e.id
+      ORDER BY e.id DESC
+      `,
+      [userId]
+    );
+
+    const emails = rows.map((email) => ({
+      ...email,
+      labels: email.labels ? email.labels.split(',') : [],
+    }));
+
     return {
       statusCode: 200,
-      body: JSON.stringify([{ id: 1, subject: "Correo de prueba" }]),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(emails),
     };
   } catch (err) {
-    console.error("Error al verificar token:", err.message);
+    console.error('Error al obtener correos:', err);
     return {
-      statusCode: 401,
-      body: JSON.stringify({ error: "Unauthorized" }),
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Error interno del servidor' }),
     };
   }
 };
-

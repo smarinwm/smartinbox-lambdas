@@ -1,15 +1,28 @@
 const pool = require('../utils/db');
-const { verifyToken } = require('../utils/auth');
 
 exports.handler = async (event) => {
   try {
-    const user = verifyToken(event.headers.Authorization);
+    console.log('Evento recibido:', JSON.stringify(event));
+
     const [rows] = await pool.query(
-      'SELECT id, title, status, due_date FROM tasks WHERE user_id = ? ORDER BY due_date ASC',
-      [user.id]
+      `
+      SELECT id, user_id, email_id, title, status, due_date
+      FROM tasks
+      ORDER BY id DESC
+      `
     );
-    return { statusCode: 200, body: JSON.stringify(rows) };
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(rows),
+    };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+    console.error('Error al obtener tareas:', err.message, err.stack);
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Error interno del servidor' }),
+    };
   }
 };
